@@ -1,5 +1,6 @@
 import express, { json } from 'express';
 import conectaNaDatabase from './config/dbConnect.js';
+import livro from './models/Livro.js';
 
 const conexao = await conectaNaDatabase();
 
@@ -25,18 +26,13 @@ const livros = [
     }
 ];
 
-function buscaLivro(id) {
-    return livros.findIndex(livro => {
-        return livro.id === Number(id)
-    })
-}
-
 app.get('/', (req, res) => {
     res.status(200).send("Curso de Node.js");
 });
 
-app.get('/livros', (req, res) => {
-    res.status(200).json(livros)
+app.get('/livros', async (req, res) => {
+    const listaLivros = await livro.find({});
+    res.status(200).json(listaLivros);
 });
 
 app.get('/livros/:id', (req, res) => {
@@ -62,6 +58,3 @@ app.delete('/livros/:id', (req, res) => {
 });
 
 export default app;
-
-//5Q6WyIVjMxjuYCry
-//mongodb+srv://jairison:<password>@cluster0.cexsprt.mongodb.net/?retryWrites=true&w=majority
