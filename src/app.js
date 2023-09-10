@@ -1,4 +1,15 @@
 import express, { json } from 'express';
+import conectaNaDatabase from './config/dbConnect.js';
+
+const conexao = await conectaNaDatabase();
+
+conexao.on("error", (erro) => {
+    console.log("Erro de conexão", erro);
+});
+
+conexao.once("open", () => {
+    console.log("Conexão com o banco feita com sucesso!")
+})
 
 const app = express();
 app.use(express.json());
@@ -6,11 +17,11 @@ app.use(express.json());
 const livros = [
     {
         "id" : 1,
-        "nome" : "O Senhor dos Anéis"
+        "titulo" : "O Senhor dos Anéis"
     },
     {
         "id" : 2,
-        "nome" : "O Hobbit"
+        "titulo" : "O Hobbit"
     }
 ];
 
@@ -40,8 +51,17 @@ app.post('/livros', (req, res) => {
 
 app.put('/livros/:id', (req, res) => {
     const index = buscaLivro(req.params.id);
-    livros[index].nome = req.body.nome;
+    livros[index].titulo = req.body.titulo;
     res.status(200).json(livros);
-})
+});
+
+app.delete('/livros/:id', (req, res) => {
+    const index = buscaLivro(req.params.id);
+    livros.splice(index, 1);
+    res.status(200).send("Livro removido com sucesso!");
+});
 
 export default app;
+
+//5Q6WyIVjMxjuYCry
+//mongodb+srv://jairison:<password>@cluster0.cexsprt.mongodb.net/?retryWrites=true&w=majority
